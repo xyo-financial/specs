@@ -1,0 +1,74 @@
+openapi: 3.0.0
+info:
+  title: XYO RESTful Transaction Enrichment API
+  version: 1.0.0
+  description: ''
+servers:
+  - url: https://api.xyo.financial
+paths:
+  /v1/ai/finance/enrichment/transaction:
+    post:
+      summary: Transaction Enrichment
+      responses: {}
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                countryCode:
+                  type: string
+            example:
+              content: COSTA PICKUP
+              countryCode: GB
+  /v1/ai/finance/enrichment/transactions:
+    post:
+      summary: Transaction Enrichments
+      parameters:
+        - name: x-api-user
+          in: header
+          required: false
+          deprecated: false
+          schema: {}
+          example: syniol
+      responses: {}
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  content:
+                    type: string
+                  countryCode:
+                    type: string
+            example:
+              - content: COSTA COLLECT
+                countryCode: GB
+  /v1/ai/finance/enrichment/status/6db068d4-b057-11f0-8de9-0242ac120002:
+    get:
+      summary: Transaction Enrichments Status
+      parameters:
+        - name: x-api-user
+          in: header
+          required: false
+          deprecated: false
+          schema: {}
+          example: syniol
+      responses: {}
+      security:
+        - BearerAuth: []
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+
