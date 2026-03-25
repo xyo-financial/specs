@@ -1,0 +1,145 @@
+{
+  "info": {
+    "_postman_id": "ad6ce3c4-f458-49a7-a81a-ec7e190dd985",
+    "name": "XYO RESTful Transaction Enrichment API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "41408414"
+  },
+  "item": [
+    {
+      "name": "Transaction Enrichment",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "Gnox3rh7GWJ72j5mSBvuCHpQvRFtx1SMQcHHDLCsvEPpU90/fiimrtx9LjCAiB9dnFuq26EsVnwUCCRJWitmUQ==",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"content\": \"COSTA PICKUP\",\n    \"countryCode\": \"GB\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.xyo.financial/v1/ai/finance/enrichment/transaction",
+          "protocol": "https",
+          "host": [
+            "api",
+            "xyo",
+            "financial"
+          ],
+          "path": [
+            "v1",
+            "ai",
+            "finance",
+            "enrichment",
+            "transaction"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Transaction Enrichments",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "ZTQ0N2MxZjhGNDhFNDRiYzg5MDFlNDQ3YzFmOEY0OEU0NGJjODkwMQ",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-api-user",
+            "value": "syniol",
+            "type": "text",
+            "disabled": true
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "[\n    {\n        \"content\": \"COSTA COLLECT\",\n        \"countryCode\": \"GB\"\n    }\n]",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.xyo.financial/v1/ai/finance/enrichment/transactions",
+          "protocol": "https",
+          "host": [
+            "api",
+            "xyo",
+            "financial"
+          ],
+          "path": [
+            "v1",
+            "ai",
+            "finance",
+            "enrichment",
+            "transactions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Transaction Enrichments Status",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "ZTQ0N2MxZjhGNDhFNDRiYzg5MDFlNDQ3YzFmOEY0OEU0NGJjODkwMQ",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-api-user",
+            "value": "syniol",
+            "type": "text",
+            "disabled": true
+          }
+        ],
+        "url": {
+          "raw": "https://api.xyo.financial/v1/ai/finance/enrichment/status/6db068d4-b057-11f0-8de9-0242ac120002",
+          "protocol": "https",
+          "host": [
+            "api",
+            "xyo",
+            "financial"
+          ],
+          "path": [
+            "v1",
+            "ai",
+            "finance",
+            "enrichment",
+            "status",
+            "6db068d4-b057-11f0-8de9-0242ac120002"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
