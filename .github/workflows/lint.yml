@@ -29,4 +29,4 @@ jobs:
         run: prettier --check openapi.yml postman.json
 
       - name: Lint OpenAPI Spec (Spectral)
-        run: spectral lint openapi.yml
+        run: spectral lint --fail-severity=warn openapi.yml
