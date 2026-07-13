@@ -33,18 +33,8 @@
         "url": {
           "raw": "https://api.xyo.financial/v1/ai/finance/enrichment/transaction",
           "protocol": "https",
-          "host": [
-            "api",
-            "xyo",
-            "financial"
-          ],
-          "path": [
-            "v1",
-            "ai",
-            "finance",
-            "enrichment",
-            "transaction"
-          ]
+          "host": ["api", "xyo", "financial"],
+          "path": ["v1", "ai", "finance", "enrichment", "transaction"]
         }
       },
       "response": [
@@ -65,18 +55,8 @@
             "url": {
               "raw": "https://api.xyo.financial/v1/ai/finance/enrichment/transaction",
               "protocol": "https",
-              "host": [
-                "api",
-                "xyo",
-                "financial"
-              ],
-              "path": [
-                "v1",
-                "ai",
-                "finance",
-                "enrichment",
-                "transaction"
-              ]
+              "host": ["api", "xyo", "financial"],
+              "path": ["v1", "ai", "finance", "enrichment", "transaction"]
             }
           },
           "status": "OK",
@@ -127,18 +107,8 @@
         "url": {
           "raw": "https://api.xyo.financial/v1/ai/finance/enrichment/transactions",
           "protocol": "https",
-          "host": [
-            "api",
-            "xyo",
-            "financial"
-          ],
-          "path": [
-            "v1",
-            "ai",
-            "finance",
-            "enrichment",
-            "transactions"
-          ]
+          "host": ["api", "xyo", "financial"],
+          "path": ["v1", "ai", "finance", "enrichment", "transactions"]
         }
       },
       "response": [
@@ -166,18 +136,8 @@
             "url": {
               "raw": "https://api.xyo.financial/v1/ai/finance/enrichment/transactions",
               "protocol": "https",
-              "host": [
-                "api",
-                "xyo",
-                "financial"
-              ],
-              "path": [
-                "v1",
-                "ai",
-                "finance",
-                "enrichment",
-                "transactions"
-              ]
+              "host": ["api", "xyo", "financial"],
+              "path": ["v1", "ai", "finance", "enrichment", "transactions"]
             }
           },
           "status": "OK",
@@ -219,11 +179,7 @@
         "url": {
           "raw": "https://api.xyo.financial/v1/ai/finance/enrichment/status/6db068d4-b057-11f0-8de9-0242ac120002",
           "protocol": "https",
-          "host": [
-            "api",
-            "xyo",
-            "financial"
-          ],
+          "host": ["api", "xyo", "financial"],
           "path": [
             "v1",
             "ai",
@@ -250,19 +206,8 @@
             "url": {
               "raw": "https://api.xyo.financial/v1/ai/finance/enrichment/status/:id",
               "protocol": "https",
-              "host": [
-                "api",
-                "xyo",
-                "financial"
-              ],
-              "path": [
-                "v1",
-                "ai",
-                "finance",
-                "enrichment",
-                "status",
-                ":id"
-              ],
+              "host": ["api", "xyo", "financial"],
+              "path": ["v1", "ai", "finance", "enrichment", "status", ":id"],
               "variable": [
                 {
                   "key": "id",

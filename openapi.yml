@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: XYO RESTful Transaction Enrichment API
   version: 1.0.0
-  description: ''
+  description: ""
 servers:
   - url: https://api.xyo.financial
 paths:
@@ -10,19 +10,19 @@ paths:
     post:
       summary: Transaction Enrichment
       responses:
-        '3XX':
+        "3XX":
           description: Redirection
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '4XX':
+                $ref: "#/components/schemas/ErrorResponse"
+        "4XX":
           description: Client Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '200':
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
           description: Successful response
           content:
             application/json:
@@ -92,19 +92,19 @@ paths:
           schema: {}
           example: syniol
       responses:
-        '3XX':
+        "3XX":
           description: Redirection
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '4XX':
+                $ref: "#/components/schemas/ErrorResponse"
+        "4XX":
           description: Client Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '200':
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
           description: Successful response
           content:
             application/json:
@@ -154,19 +154,19 @@ paths:
           schema: {}
           example: syniol
       responses:
-        '3XX':
+        "3XX":
           description: Redirection
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '4XX':
+                $ref: "#/components/schemas/ErrorResponse"
+        "4XX":
           description: Client Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '200':
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
           description: Successful response
           content:
             application/json:
@@ -200,4 +200,3 @@ components:
     BearerAuth:
       type: http
       scheme: bearer
-
