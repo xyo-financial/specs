@@ -8,6 +8,9 @@ info:
     url: https://syniol.com
 servers:
   - url: https://api.xyo.financial
+tags:
+  - name: Enrichment
+    description: "Endpoints related to enriching financial transactions."
 paths:
   /v1/ai/finance/enrichment/transaction:
     post:
