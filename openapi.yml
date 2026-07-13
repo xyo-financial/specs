@@ -2,13 +2,20 @@ openapi: 3.0.0
 info:
   title: XYO RESTful Transaction Enrichment API
   version: 1.0.0
-  description: ""
+  description: "RESTful API for enriching financial transactions."
+  contact:
+    name: Syniol Support
+    url: https://syniol.com
 servers:
   - url: https://api.xyo.financial
 paths:
   /v1/ai/finance/enrichment/transaction:
     post:
       summary: Transaction Enrichment
+      description: "Enrich a single financial transaction synchronously."
+      operationId: enrichTransaction
+      tags:
+        - Enrichment
       responses:
         "3XX":
           description: Redirection
@@ -84,6 +91,10 @@ paths:
   /v1/ai/finance/enrichment/transactions:
     post:
       summary: Transaction Enrichments
+      description: "Enrich a collection of financial transactions asynchronously."
+      operationId: enrichTransactions
+      tags:
+        - Enrichment
       parameters:
         - name: x-api-user
           in: header
@@ -141,6 +152,10 @@ paths:
   /v1/ai/finance/enrichment/status/{id}:
     get:
       summary: Transaction Enrichments Status
+      description: "Get the status of an asynchronous bulk enrichment job."
+      operationId: getEnrichmentStatus
+      tags:
+        - Enrichment
       parameters:
         - name: id
           in: path
