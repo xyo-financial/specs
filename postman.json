@@ -33,21 +33,45 @@
         "url": {
           "raw": "https://api.xyo.financial/v1/ai/finance/enrichment/transaction",
           "protocol": "https",
-          "host": [
-            "api",
-            "xyo",
-            "financial"
-          ],
-          "path": [
-            "v1",
-            "ai",
-            "finance",
-            "enrichment",
-            "transaction"
-          ]
+          "host": ["api", "xyo", "financial"],
+          "path": ["v1", "ai", "finance", "enrichment", "transaction"]
         }
       },
-      "response": []
+      "response": [
+        {
+          "name": "Successful response",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"content\": \"COSTA PICKUP\",\n    \"countryCode\": \"GB\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://api.xyo.financial/v1/ai/finance/enrichment/transaction",
+              "protocol": "https",
+              "host": ["api", "xyo", "financial"],
+              "path": ["v1", "ai", "finance", "enrichment", "transaction"]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"merchant\": \"Costa Coffee\",\n    \"description\": \"Coffee shop chain\",\n    \"categories\": [\n        \"Food and Beverage\",\n        \"Cafe\"\n    ],\n    \"logo\": \"iVBORw0KGgo=\",\n    \"location\": \"GB, London\",\n    \"address\": \"123 High St\"\n}"
+        }
+      ]
     },
     {
       "name": "Transaction Enrichments",
@@ -83,21 +107,52 @@
         "url": {
           "raw": "https://api.xyo.financial/v1/ai/finance/enrichment/transactions",
           "protocol": "https",
-          "host": [
-            "api",
-            "xyo",
-            "financial"
-          ],
-          "path": [
-            "v1",
-            "ai",
-            "finance",
-            "enrichment",
-            "transactions"
-          ]
+          "host": ["api", "xyo", "financial"],
+          "path": ["v1", "ai", "finance", "enrichment", "transactions"]
         }
       },
-      "response": []
+      "response": [
+        {
+          "name": "Successful response",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-user",
+                "value": "syniol",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "[\n    {\n        \"content\": \"COSTA COLLECT\",\n        \"countryCode\": \"GB\"\n    }\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://api.xyo.financial/v1/ai/finance/enrichment/transactions",
+              "protocol": "https",
+              "host": ["api", "xyo", "financial"],
+              "path": ["v1", "ai", "finance", "enrichment", "transactions"]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"id\": \"12345-abcde\",\n    \"link\": \"https://s3.amazonaws.com/results/12345-abcde.tar.gz\"\n}"
+        }
+      ]
     },
     {
       "name": "Transaction Enrichments Status",
@@ -124,11 +179,7 @@
         "url": {
           "raw": "https://api.xyo.financial/v1/ai/finance/enrichment/status/6db068d4-b057-11f0-8de9-0242ac120002",
           "protocol": "https",
-          "host": [
-            "api",
-            "xyo",
-            "financial"
-          ],
+          "host": ["api", "xyo", "financial"],
           "path": [
             "v1",
             "ai",
@@ -139,7 +190,45 @@
           ]
         }
       },
-      "response": []
+      "response": [
+        {
+          "name": "Successful response",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-user",
+                "value": "syniol",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "https://api.xyo.financial/v1/ai/finance/enrichment/status/:id",
+              "protocol": "https",
+              "host": ["api", "xyo", "financial"],
+              "path": ["v1", "ai", "finance", "enrichment", "status", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "6db068d4-b057-11f0-8de9-0242ac120002"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"status\": \"READY\"\n}"
+        }
+      ]
     }
   ]
 }

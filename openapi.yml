@@ -2,32 +2,102 @@ openapi: 3.0.0
 info:
   title: XYO RESTful Transaction Enrichment API
   version: 1.0.0
-  description: ''
+  description: "RESTful API for enriching financial transactions."
+  contact:
+    name: Syniol Support
+    url: https://syniol.com
 servers:
   - url: https://api.xyo.financial
+tags:
+  - name: Enrichment
+    description: "Endpoints related to enriching financial transactions."
 paths:
   /v1/ai/finance/enrichment/transaction:
     post:
       summary: Transaction Enrichment
-      responses: {}
+      description: "Enrich a single financial transaction synchronously."
+      operationId: enrichTransaction
+      tags:
+        - Enrichment
+      responses:
+        "3XX":
+          description: Redirection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "4XX":
+          description: Client Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                title: EnrichmentResponse
+                type: object
+                properties:
+                  merchant:
+                    type: string
+                    description: Merchant is the name of the merchant.
+                  description:
+                    type: string
+                    description: Description is a brief description of the merchant.
+                  categories:
+                    type: array
+                    items:
+                      type: string
+                    description: Categories lists categories fitting the description of the merchant.
+                  logo:
+                    type: string
+                    description: Logo is a base64-encoded PNG or JPEG representing the merchant logo.
+                  location:
+                    type: string
+                    description: Location describes the country and city. May be empty if the API returns null.
+                  address:
+                    type: string
+                    description: Address describes the exact address of purchase. May be empty if the API returns null.
+                required:
+                  - merchant
+                  - description
+                  - categories
+                  - logo
+                  - location
+                  - address
       security:
         - BearerAuth: []
       requestBody:
         content:
           application/json:
             schema:
+              title: EnrichmentRequest
               type: object
               properties:
                 content:
                   type: string
+                  maxLength: 128
+                  description: Content is the payment description, maximum 128 characters.
                 countryCode:
                   type: string
+                  minLength: 2
+                  maxLength: 2
+                  description: CountryCode is the ISO 3166-1 alpha-2 two-character country code.
+              required:
+                - content
+                - countryCode
             example:
               content: COSTA PICKUP
               countryCode: GB
   /v1/ai/finance/enrichment/transactions:
     post:
       summary: Transaction Enrichments
+      description: "Enrich a collection of financial transactions asynchronously."
+      operationId: enrichTransactions
+      tags:
+        - Enrichment
       parameters:
         - name: x-api-user
           in: header
@@ -35,7 +105,36 @@ paths:
           deprecated: false
           schema: {}
           example: syniol
-      responses: {}
+      responses:
+        "3XX":
+          description: Redirection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "4XX":
+          description: Client Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                title: EnrichTransactionCollectionResponse
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: ID is the work ID for the enrichment request.
+                  link:
+                    type: string
+                    description: Link is the URL to the downloadable tar.gz results archive.
+                required:
+                  - id
+                  - link
       security:
         - BearerAuth: []
       requestBody:
@@ -53,22 +152,69 @@ paths:
             example:
               - content: COSTA COLLECT
                 countryCode: GB
-  /v1/ai/finance/enrichment/status/6db068d4-b057-11f0-8de9-0242ac120002:
+  /v1/ai/finance/enrichment/status/{id}:
     get:
       summary: Transaction Enrichments Status
+      description: "Get the status of an asynchronous bulk enrichment job."
+      operationId: getEnrichmentStatus
+      tags:
+        - Enrichment
       parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: x-api-user
           in: header
           required: false
           deprecated: false
           schema: {}
           example: syniol
-      responses: {}
+      responses:
+        "3XX":
+          description: Redirection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "4XX":
+          description: Client Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                title: EnrichmentCollectionStatusResponse
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - READY
+                      - FAILED
+                      - PENDING
+                    description: Status represents the processing state of a bulk enrichment job.
+                required:
+                  - status
       security:
         - BearerAuth: []
 components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+      required:
+        - errors
   securitySchemes:
     BearerAuth:
       type: http
       scheme: bearer
-
