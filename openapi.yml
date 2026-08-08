@@ -8,6 +8,9 @@ info:
     url: https://syniol.com
 servers:
   - url: https://api.xyo.financial
+    description: "Production API Server"
+security:
+  - BearerAuth: []
 tags:
   - name: Enrichment
     description: "Endpoints related to enriching financial transactions."
@@ -19,57 +22,11 @@ paths:
       operationId: enrichTransaction
       tags:
         - Enrichment
-      responses:
-        "3XX":
-          description: Redirection
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "4XX":
-          description: Client Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "200":
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                title: EnrichmentResponse
-                type: object
-                properties:
-                  merchant:
-                    type: string
-                    description: Merchant is the name of the merchant.
-                  description:
-                    type: string
-                    description: Description is a brief description of the merchant.
-                  categories:
-                    type: array
-                    items:
-                      type: string
-                    description: Categories lists categories fitting the description of the merchant.
-                  logo:
-                    type: string
-                    description: Logo is a base64-encoded PNG or JPEG representing the merchant logo.
-                  location:
-                    type: string
-                    description: Location describes the country and city. May be empty if the API returns null.
-                  address:
-                    type: string
-                    description: Address describes the exact address of purchase. May be empty if the API returns null.
-                required:
-                  - merchant
-                  - description
-                  - categories
-                  - logo
-                  - location
-                  - address
       security:
         - BearerAuth: []
       requestBody:
+        description: "Transaction enrichment request payload containing payment text and ISO-3166-1 alpha-2 country code."
+        required: true
         content:
           application/json:
             schema:
@@ -79,33 +36,140 @@ paths:
                 content:
                   type: string
                   maxLength: 128
-                  description: Content is the payment description, maximum 128 characters.
+                  description: "Content is the payment description, maximum 128 characters."
+                  example: "COSTA PICKUP LONDON"
                 countryCode:
                   type: string
                   minLength: 2
                   maxLength: 2
-                  description: CountryCode is the ISO 3166-1 alpha-2 two-character country code.
+                  description: "CountryCode is the ISO 3166-1 alpha-2 two-character country code."
+                  example: "GB"
               required:
                 - content
                 - countryCode
-            example:
-              content: COSTA PICKUP
-              countryCode: GB
-  /v1/ai/finance/enrichment/transactions:
-    post:
-      summary: Transaction Enrichments
-      description: "Enrich a collection of financial transactions asynchronously."
-      operationId: enrichTransactions
-      tags:
-        - Enrichment
-      parameters:
-        - name: x-api-user
-          in: header
-          required: false
-          deprecated: false
-          schema: {}
-          example: syniol
+            examples:
+              costa:
+                summary: "Costa Coffee transaction"
+                description: "Single payment description from a UK Costa Coffee pickup order."
+                value:
+                  content: "COSTA PICKUP LONDON"
+                  countryCode: "GB"
+              starbucks:
+                summary: "Starbucks transaction"
+                description: "Single payment description from a US Starbucks store order."
+                value:
+                  content: "STARBUCKS STORE #10423 SEATTLE WA"
+                  countryCode: "US"
+              uber:
+                summary: "Uber ride transaction"
+                description: "Single payment description from an Uber ride."
+                value:
+                  content: "UBER *TRIP 12345 HELP.UBER.COM"
+                  countryCode: "GB"
+              tfl:
+                summary: "Transport for London transaction"
+                description: "Single payment description from TfL contactless travel charge."
+                value:
+                  content: "TfL Travel Charge tfl.gov.uk"
+                  countryCode: "GB"
       responses:
+        "200":
+          description: "Successful response returning enriched merchant and categorization details."
+          content:
+            application/json:
+              schema:
+                title: EnrichmentResponse
+                type: object
+                properties:
+                  merchant:
+                    type: string
+                    description: "Merchant is the name of the merchant."
+                    example: "Costa Coffee"
+                  description:
+                    type: string
+                    description: "Description is a brief description of the merchant."
+                    example: "Costa Coffee is a British coffeehouse chain and a subsidiary of The Coca-Cola Company."
+                  categories:
+                    type: array
+                    items:
+                      type: string
+                    description: "Categories lists categories fitting the description of the merchant."
+                    example:
+                      - "Food & Beverage"
+                      - "Cafes & Coffee Shops"
+                      - "Dining Out"
+                  logo:
+                    type: string
+                    description: "Logo is a base64-encoded PNG or JPEG representing the merchant logo."
+                    example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+                  location:
+                    type: string
+                    description: "Location describes the country and city. May be empty if the API returns null."
+                    example: "United Kingdom, London"
+                  address:
+                    type: string
+                    description: "Address describes the exact address of purchase. May be empty if the API returns null."
+                    example: "40-42 Great Portland St, London W1W 7LZ"
+                required:
+                  - merchant
+                  - description
+                  - categories
+                  - logo
+                  - location
+                  - address
+              examples:
+                costa:
+                  summary: "Costa Coffee enriched response"
+                  description: "Enrichment response for Costa Coffee in London, UK."
+                  value:
+                    merchant: "Costa Coffee"
+                    description: "Costa Coffee is a British coffeehouse chain and a subsidiary of The Coca-Cola Company."
+                    categories:
+                      - "Food & Beverage"
+                      - "Cafes & Coffee Shops"
+                      - "Dining Out"
+                    logo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+                    location: "United Kingdom, London"
+                    address: "40-42 Great Portland St, Marylebone, London W1W 7LZ"
+                starbucks:
+                  summary: "Starbucks enriched response"
+                  description: "Enrichment response for Starbucks store in Seattle, US."
+                  value:
+                    merchant: "Starbucks"
+                    description: "Starbucks Corporation is an American multinational chain of coffeehouses and roastery reserves headquartered in Seattle, Washington."
+                    categories:
+                      - "Food & Beverage"
+                      - "Cafes & Coffee Shops"
+                      - "Dining Out"
+                    logo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+                    location: "United States, Seattle"
+                    address: "1912 Pike Pl, Seattle, WA 98101"
+                uber:
+                  summary: "Uber enriched response"
+                  description: "Enrichment response for Uber ride-hailing services."
+                  value:
+                    merchant: "Uber"
+                    description: "Uber Technologies, Inc. provides mobility services, ride-hailing, food delivery, and freight transport."
+                    categories:
+                      - "Transportation"
+                      - "Ride Sharing & Taxis"
+                      - "Travel"
+                    logo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+                    location: "United Kingdom, London"
+                    address: "Aldgate Tower, 2 Leman St, London E1 8FA"
+                tfl:
+                  summary: "Transport for London enriched response"
+                  description: "Enrichment response for Transport for London public transit."
+                  value:
+                    merchant: "Transport for London"
+                    description: "Transport for London (TfL) is the local government body responsible for the transport network in Greater London."
+                    categories:
+                      - "Public Transportation"
+                      - "Trains & Subways"
+                      - "Commuter Transit"
+                    logo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+                    location: "United Kingdom, London"
+                    address: "5 Endeavour Square, London E20 1JN"
         "3XX":
           description: Redirection
           content:
@@ -118,26 +182,62 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-        "200":
-          description: Successful response
+              examples:
+                unauthorized:
+                  summary: "401 Unauthorized Error"
+                  value:
+                    errors:
+                      - type: "https://api.xyo.financial/errors/unauthorized"
+                        title: "Unauthorized"
+                        status: 401
+                        detail: "Invalid or expired Bearer authentication token provided."
+                        instance: "/v1/ai/finance/enrichment/transaction#req-001"
+                badRequest:
+                  summary: "400 Bad Request Error"
+                  value:
+                    errors:
+                      - type: "https://api.xyo.financial/errors/bad-request"
+                        title: "Bad Request"
+                        status: 400
+                        detail: "Request body is missing required field 'countryCode'."
+                        instance: "/v1/ai/finance/enrichment/transaction#req-002"
+        "5XX":
+          description: Server Error
           content:
             application/json:
               schema:
-                title: EnrichTransactionCollectionResponse
-                type: object
-                properties:
-                  id:
-                    type: string
-                    description: ID is the work ID for the enrichment request.
-                  link:
-                    type: string
-                    description: Link is the URL to the downloadable tar.gz results archive.
-                required:
-                  - id
-                  - link
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                internalServerError:
+                  summary: "500 Internal Server Error"
+                  value:
+                    errors:
+                      - type: "https://api.xyo.financial/errors/internal-server-error"
+                        title: "Internal Server Error"
+                        status: 500
+                        detail: "An unexpected server error occurred while processing transaction enrichment."
+                        instance: "/v1/ai/finance/enrichment/transaction#req-003"
+  /v1/ai/finance/enrichment/transactions:
+    post:
+      summary: Transaction Enrichments
+      description: "Enrich a collection of financial transactions asynchronously."
+      operationId: enrichTransactions
+      tags:
+        - Enrichment
       security:
         - BearerAuth: []
+      parameters:
+        - name: x-api-user
+          in: header
+          required: false
+          deprecated: false
+          description: "Optional identifier for the API user or tenant."
+          schema:
+            type: string
+          example: syniol
       requestBody:
+        description: "Array of transaction enrichment requests for asynchronous batch processing."
+        required: true
         content:
           application/json:
             schema:
@@ -147,31 +247,57 @@ paths:
                 properties:
                   content:
                     type: string
+                    maxLength: 128
+                    description: "Content is the payment description, maximum 128 characters."
+                    example: "COSTA PICKUP LONDON"
                   countryCode:
                     type: string
-            example:
-              - content: COSTA COLLECT
-                countryCode: GB
-  /v1/ai/finance/enrichment/status/{id}:
-    get:
-      summary: Transaction Enrichments Status
-      description: "Get the status of an asynchronous bulk enrichment job."
-      operationId: getEnrichmentStatus
-      tags:
-        - Enrichment
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: x-api-user
-          in: header
-          required: false
-          deprecated: false
-          schema: {}
-          example: syniol
+                    minLength: 2
+                    maxLength: 2
+                    description: "CountryCode is the ISO 3166-1 alpha-2 two-character country code."
+                    example: "GB"
+                required:
+                  - content
+                  - countryCode
+            examples:
+              batchSample:
+                summary: "Batch of sample transactions"
+                description: "A collection of transactions including Costa Coffee, Starbucks, Uber, and Transport for London."
+                value:
+                  - content: "COSTA PICKUP LONDON"
+                    countryCode: "GB"
+                  - content: "STARBUCKS STORE #10423 SEATTLE WA"
+                    countryCode: "US"
+                  - content: "UBER *TRIP 12345 HELP.UBER.COM"
+                    countryCode: "GB"
+                  - content: "TfL Travel Charge tfl.gov.uk"
+                    countryCode: "GB"
       responses:
+        "200":
+          description: "Successful response returning bulk job ID and download archive link."
+          content:
+            application/json:
+              schema:
+                title: EnrichTransactionCollectionResponse
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: "ID is the work ID for the enrichment request."
+                    example: "72c037df-d0d3-43ee-9470-323ff35a2e50"
+                  link:
+                    type: string
+                    description: "Link is the URL to the downloadable tar.gz results archive."
+                    example: "https://api.xyo.financial/v1/ai/finance/enrichment/download/72c037df-d0d3-43ee-9470-323ff35a2e50.tar.gz"
+                required:
+                  - id
+                  - link
+              examples:
+                jobCreated:
+                  summary: "Asynchronous job created"
+                  value:
+                    id: "72c037df-d0d3-43ee-9470-323ff35a2e50"
+                    link: "https://api.xyo.financial/v1/ai/finance/enrichment/download/72c037df-d0d3-43ee-9470-323ff35a2e50.tar.gz"
         "3XX":
           description: Redirection
           content:
@@ -184,8 +310,40 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "5XX":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /v1/ai/finance/enrichment/status/{id}:
+    get:
+      summary: Transaction Enrichments Status
+      description: "Get the status of an asynchronous bulk enrichment job."
+      operationId: getEnrichmentStatus
+      tags:
+        - Enrichment
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "The unique identifier of the asynchronous bulk enrichment job."
+          schema:
+            type: string
+          example: "72c037df-d0d3-43ee-9470-323ff35a2e50"
+        - name: x-api-user
+          in: header
+          required: false
+          deprecated: false
+          description: "Optional identifier for the API user or tenant."
+          schema:
+            type: string
+          example: syniol
+      responses:
         "200":
-          description: Successful response
+          description: "Successful response returning the current processing status of the bulk enrichment job."
           content:
             application/json:
               schema:
@@ -198,23 +356,100 @@ paths:
                       - READY
                       - FAILED
                       - PENDING
-                    description: Status represents the processing state of a bulk enrichment job.
+                    description: "Status represents the processing state of a bulk enrichment job."
+                    example: "READY"
                 required:
                   - status
-      security:
-        - BearerAuth: []
+              examples:
+                ready:
+                  summary: "Job completed and ready"
+                  value:
+                    status: "READY"
+                pending:
+                  summary: "Job still processing"
+                  value:
+                    status: "PENDING"
+                failed:
+                  summary: "Job processing failed"
+                  value:
+                    status: "FAILED"
+        "3XX":
+          description: Redirection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "4XX":
+          description: Client Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "5XX":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
+    APIError:
+      type: object
+      description: "RFC 7807 compliant problem details object representing an API error."
+      properties:
+        type:
+          type: string
+          description: "A URI reference identifying the problem type."
+          example: "https://api.xyo.financial/errors/unauthorized"
+        title:
+          type: string
+          description: "A short, human-readable summary of the problem type."
+          example: "Unauthorized"
+        status:
+          type: integer
+          description: "The HTTP status code generated by the origin server for this occurrence of the problem."
+          example: 401
+        detail:
+          type: string
+          description: "A human-readable explanation specific to this occurrence of the problem."
+          example: "Invalid or expired Bearer authentication token provided."
+        instance:
+          type: string
+          description: "A URI reference identifying the specific occurrence of the problem."
+          example: "/v1/ai/finance/enrichment/transaction#req-9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+      required:
+        - type
+        - title
+        - status
+        - detail
+        - instance
+      example:
+        type: "https://api.xyo.financial/errors/unauthorized"
+        title: "Unauthorized"
+        status: 401
+        detail: "Invalid or expired Bearer authentication token provided."
+        instance: "/v1/ai/finance/enrichment/transaction#req-9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
     ErrorResponse:
       type: object
+      description: "Standard error response envelope containing a list of RFC 7807 problem details errors."
       properties:
         errors:
           type: array
+          description: "List of problem details errors returned by the API."
           items:
-            type: string
+            $ref: "#/components/schemas/APIError"
       required:
         - errors
+      example:
+        errors:
+          - type: "https://api.xyo.financial/errors/unauthorized"
+            title: "Unauthorized"
+            status: 401
+            detail: "Invalid or expired Bearer authentication token provided."
+            instance: "/v1/ai/finance/enrichment/transaction#req-9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
   securitySchemes:
     BearerAuth:
       type: http
       scheme: bearer
+      bearerFormat: JWT
+      description: "HTTP Bearer authentication scheme using API tokens or JWTs."
