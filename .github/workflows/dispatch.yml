@@ -1,0 +1,36 @@
+name: Dispatch SDKs Regeneration
+
+on:
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag or ref to dispatch to SDKs'
+        required: false
+        default: 'main'
+
+jobs:
+  dispatch:
+    name: Dispatch Event to SDKs
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        repo:
+          - xyo-financial/sdk-go
+          - xyo-financial/sdk-node
+          - xyo-financial/sdk-java
+          - xyo-financial/sdk-php
+          - xyo-financial/sdk-cpp
+          - xyo-financial/sdk-rust
+      fail-fast: false
+
+    steps:
+      - name: Dispatch ${{ matrix.repo }}
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.SDK_DISPATCH_TOKEN || secrets.DISPATCH_TOKEN || secrets.GITHUB_TOKEN }}
+          repository: ${{ matrix.repo }}
+          event-type: spec_tagged
+          client-payload: '{"tag": "${{ github.ref_name || inputs.tag }}"}'
