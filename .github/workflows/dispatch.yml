@@ -24,6 +24,8 @@ jobs:
           - xyo-financial/sdk-php
           - xyo-financial/sdk-cpp
           - xyo-financial/sdk-rust
+          - xyo-financial/sdk-dotnet
+          - xyo-financial/sdk-python
       fail-fast: false
 
     steps:
