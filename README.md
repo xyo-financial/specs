@@ -10,8 +10,10 @@ Central source of truth for the **[XYO Financial](https://xyo.financial)** AI Tr
 
 ## 📋 Available Specifications
 
-- **OpenAPI v3.0 Specification:** [`openapi.yml`](openapi.yml) — Standard OpenAPI definition utilized for automated multi-language SDK code generation.
-- **Postman Collection:** [`postman.json`](postman.json) — Ready-to-import API test suite and request collection.
+| Specification          | Artifact                       | Purpose                                                  |
+| :--------------------- | :----------------------------- | :------------------------------------------------------- |
+| **OpenAPI v3.0**       | [`openapi.yml`](openapi.yml)   | Multi-language SDK code generation and schema contract   |
+| **Postman Collection** | [`postman.json`](postman.json) | Ready-to-import API request suite and testing collection |
 
 ---
 
@@ -44,7 +46,7 @@ This repository enforces strict OpenAPI schema validation and style governance:
 
 ```bash
 # Verify formatting
-npx prettier --check openapi.yml postman.json
+npx prettier --check openapi.yml postman.json README.md
 
 # Run Spectral linting
 npx @stoplight/spectral-cli lint --fail-severity=warn openapi.yml
