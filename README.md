@@ -23,14 +23,13 @@ All official client SDKs are deterministically generated and synchronized with t
 
 | Language / Runtime       | Repository                                                                | Package / Ecosystem                      |
 | :----------------------- | :------------------------------------------------------------------------ | :--------------------------------------- |
-| **Go**                   | [`xyo-financial/sdk-go`](https://github.com/xyo-financial/sdk-go)         | `go get github.com/xyo-financial/sdk-go` |
-| **Node.js & TypeScript** | [`xyo-financial/sdk-node`](https://github.com/xyo-financial/sdk-node)     | `npm install @xyo-financial/sdk`         |
-| **Python**               | [`xyo-financial/sdk-python`](https://github.com/xyo-financial/sdk-python) | `pip install xyo-sdk`                    |
-| **.NET / C#**            | [`xyo-financial/sdk-dotnet`](https://github.com/xyo-financial/sdk-dotnet) | `dotnet add package Xyo.Sdk`             |
-| **Java**                 | [`xyo-financial/sdk-java`](https://github.com/xyo-financial/sdk-java)     | Maven Central / Gradle                   |
-| **Rust**                 | [`xyo-financial/sdk-rust`](https://github.com/xyo-financial/sdk-rust)     | `cargo add xyo`                          |
-| **PHP**                  | [`xyo-financial/sdk-php`](https://github.com/xyo-financial/sdk-php)       | `composer require xyo/sdk`               |
 | **C++**                  | [`xyo-financial/sdk-cpp`](https://github.com/xyo-financial/sdk-cpp)       | CMake / vcpkg                            |
+| **Rust**                 | [`xyo-financial/sdk-rust`](https://github.com/xyo-financial/sdk-rust)     | `cargo add xyo-sdk`                      |
+| **Go**                   | [`xyo-financial/sdk-go`](https://github.com/xyo-financial/sdk-go)         | `go get github.com/xyo-financial/sdk-go` |
+| **Java**                 | [`xyo-financial/sdk-java`](https://github.com/xyo-financial/sdk-java)     | Maven Central / Gradle                   |
+| **.NET / C#**            | [`xyo-financial/sdk-dotnet`](https://github.com/xyo-financial/sdk-dotnet) | `dotnet add package Xyo.Sdk`             |
+| **Python**               | [`xyo-financial/sdk-python`](https://github.com/xyo-financial/sdk-python) | `pip install xyo-sdk`                    |
+| **Node.js & TypeScript** | [`xyo-financial/sdk-node`](https://github.com/xyo-financial/sdk-node)     | `npm install @xyo-financial/sdk`         |
 
 ---
 
@@ -40,7 +39,7 @@ This repository enforces strict OpenAPI schema validation and style governance:
 
 1. **Prettier Formatting:** Ensures consistent YAML/JSON indentation and formatting.
 2. **Spectral Linting:** Validates OpenAPI 3.0 semantic accuracy and structural rules via `.spectral.yaml`.
-3. **Automated SDK Dispatch:** Pushing a new version tag (e.g. `v2.0.0`) automatically dispatches a `spec_tagged` webhook to all 8 client SDK repositories to trigger automated regeneration and test validation.
+3. **Automated SDK Dispatch:** Pushing a new version tag (e.g. `v2.0.0`) automatically dispatches a `spec_tagged` webhook to all 7 client SDK repositories to trigger automated regeneration and test validation.
 
 ### Local Verification
 
