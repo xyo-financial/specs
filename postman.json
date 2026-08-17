@@ -14,16 +14,23 @@
           "bearer": [
             {
               "key": "token",
-              "value": "Gnox3rh7GWJ72j5mSBvuCHpQvRFtx1SMQcHHDLCsvEPpU90/fiimrtx9LjCAiB9dnFuq26EsVnwUCCRJWitmUQ==",
+              "value": "{{BEARER_TOKEN}}",
               "type": "string"
             }
           ]
         },
         "method": "POST",
-        "header": [],
+        "header": [
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{$guid}}",
+            "type": "text",
+            "disabled": true
+          }
+        ],
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"content\": \"COSTA PICKUP\",\n    \"countryCode\": \"GB\"\n}",
+          "raw": "{\n    \"content\": \"COSTA PICKUP LONDON\",\n    \"countryCode\": \"GB\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -45,7 +52,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"content\": \"COSTA PICKUP\",\n    \"countryCode\": \"GB\"\n}",
+              "raw": "{\n    \"content\": \"COSTA PICKUP LONDON\",\n    \"countryCode\": \"GB\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -66,10 +73,14 @@
             {
               "key": "Content-Type",
               "value": "application/json"
+            },
+            {
+              "key": "X-Correlation-ID",
+              "value": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
             }
           ],
           "cookie": [],
-          "body": "{\n    \"merchant\": \"Costa Coffee\",\n    \"description\": \"Coffee shop chain\",\n    \"categories\": [\n        \"Food and Beverage\",\n        \"Cafe\"\n    ],\n    \"logo\": \"iVBORw0KGgo=\",\n    \"location\": \"GB, London\",\n    \"address\": \"123 High St\"\n}"
+          "body": "{\n    \"merchant\": \"Costa Coffee\",\n    \"description\": \"Costa Coffee is a British coffeehouse chain and a subsidiary of The Coca-Cola Company.\",\n    \"categories\": [\n        \"Food & Beverage\",\n        \"Cafes & Coffee Shops\",\n        \"Dining Out\"\n    ],\n    \"logo\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==\",\n    \"location\": \"United Kingdom, London\",\n    \"address\": \"40-42 Great Portland St, London W1W 7LZ\"\n}"
         }
       ]
     },
@@ -81,7 +92,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "ZTQ0N2MxZjhGNDhFNDRiYzg5MDFlNDQ3YzFmOEY0OEU0NGJjODkwMQ",
+              "value": "{{BEARER_TOKEN}}",
               "type": "string"
             }
           ]
@@ -93,11 +104,17 @@
             "value": "syniol",
             "type": "text",
             "disabled": true
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{$guid}}",
+            "type": "text",
+            "disabled": true
           }
         ],
         "body": {
           "mode": "raw",
-          "raw": "[\n    {\n        \"content\": \"COSTA COLLECT\",\n        \"countryCode\": \"GB\"\n    }\n]",
+          "raw": "[\n    {\n        \"content\": \"COSTA PICKUP LONDON\",\n        \"countryCode\": \"GB\"\n    },\n    {\n        \"content\": \"STARBUCKS STORE #10423 SEATTLE WA\",\n        \"countryCode\": \"US\"\n    }\n]",
           "options": {
             "raw": {
               "language": "json"
@@ -126,7 +143,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "[\n    {\n        \"content\": \"COSTA COLLECT\",\n        \"countryCode\": \"GB\"\n    }\n]",
+              "raw": "[\n    {\n        \"content\": \"COSTA PICKUP LONDON\",\n        \"countryCode\": \"GB\"\n    }\n]",
               "options": {
                 "raw": {
                   "language": "json"
@@ -147,10 +164,14 @@
             {
               "key": "Content-Type",
               "value": "application/json"
+            },
+            {
+              "key": "X-Correlation-ID",
+              "value": "72c037df-d0d3-43ee-9470-323ff35a2e50"
             }
           ],
           "cookie": [],
-          "body": "{\n    \"id\": \"12345-abcde\",\n    \"link\": \"https://s3.amazonaws.com/results/12345-abcde.tar.gz\"\n}"
+          "body": "{\n    \"id\": \"72c037df-d0d3-43ee-9470-323ff35a2e50\",\n    \"link\": \"https://api.xyo.financial/v1/ai/finance/enrichment/download/72c037df-d0d3-43ee-9470-323ff35a2e50.tar.gz\"\n}"
         }
       ]
     },
@@ -162,7 +183,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "ZTQ0N2MxZjhGNDhFNDRiYzg5MDFlNDQ3YzFmOEY0OEU0NGJjODkwMQ",
+              "value": "{{BEARER_TOKEN}}",
               "type": "string"
             }
           ]
@@ -174,10 +195,16 @@
             "value": "syniol",
             "type": "text",
             "disabled": true
+          },
+          {
+            "key": "X-Correlation-ID",
+            "value": "{{$guid}}",
+            "type": "text",
+            "disabled": true
           }
         ],
         "url": {
-          "raw": "https://api.xyo.financial/v1/ai/finance/enrichment/status/6db068d4-b057-11f0-8de9-0242ac120002",
+          "raw": "https://api.xyo.financial/v1/ai/finance/enrichment/status/72c037df-d0d3-43ee-9470-323ff35a2e50",
           "protocol": "https",
           "host": ["api", "xyo", "financial"],
           "path": [
@@ -186,7 +213,7 @@
             "finance",
             "enrichment",
             "status",
-            "6db068d4-b057-11f0-8de9-0242ac120002"
+            "72c037df-d0d3-43ee-9470-323ff35a2e50"
           ]
         }
       },
@@ -211,7 +238,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "6db068d4-b057-11f0-8de9-0242ac120002"
+                  "value": "72c037df-d0d3-43ee-9470-323ff35a2e50"
                 }
               ]
             }
@@ -223,6 +250,10 @@
             {
               "key": "Content-Type",
               "value": "application/json"
+            },
+            {
+              "key": "X-Correlation-ID",
+              "value": "72c037df-d0d3-43ee-9470-323ff35a2e50"
             }
           ],
           "cookie": [],
