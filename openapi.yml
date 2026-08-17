@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: XYO RESTful Transaction Enrichment API
-  version: 1.0.0
+  version: 2.0.0
   description: "RESTful API for enriching financial transactions."
   contact:
     name: Syniol Support
@@ -24,6 +24,9 @@ paths:
         - Enrichment
       security:
         - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/CorrelationIdHeader"
+        - $ref: "#/components/parameters/TraceParentHeader"
       requestBody:
         description: "Transaction enrichment request payload containing payment text and ISO-3166-1 alpha-2 country code."
         required: true
@@ -75,6 +78,9 @@ paths:
       responses:
         "200":
           description: "Successful response returning enriched merchant and categorization details."
+          headers:
+            X-Correlation-ID:
+              $ref: "#/components/headers/CorrelationIdResponseHeader"
           content:
             application/json:
               schema:
@@ -170,6 +176,8 @@ paths:
                     logo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
                     location: "United Kingdom, London"
                     address: "5 Endeavour Square, London E20 1JN"
+        "429":
+          $ref: "#/components/responses/TooManyRequestsError"
         "3XX":
           description: Redirection
           content:
@@ -178,6 +186,9 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "4XX":
           description: Client Error
+          headers:
+            X-Correlation-ID:
+              $ref: "#/components/headers/CorrelationIdResponseHeader"
           content:
             application/json:
               schema:
@@ -203,6 +214,9 @@ paths:
                         instance: "/v1/ai/finance/enrichment/transaction#req-002"
         "5XX":
           description: Server Error
+          headers:
+            X-Correlation-ID:
+              $ref: "#/components/headers/CorrelationIdResponseHeader"
           content:
             application/json:
               schema:
@@ -235,13 +249,18 @@ paths:
           schema:
             type: string
           example: syniol
+        - $ref: "#/components/parameters/CorrelationIdHeader"
+        - $ref: "#/components/parameters/TraceParentHeader"
       requestBody:
-        description: "Array of transaction enrichment requests for asynchronous batch processing."
+        description: "Array of transaction enrichment requests (minimum 1, maximum 50,000 items) for asynchronous batch processing."
         required: true
         content:
           application/json:
             schema:
               type: array
+              minItems: 1
+              maxItems: 50000
+              description: "Array of transactions to enrich (bounded between 1 and 50,000 items)."
               items:
                 type: object
                 properties:
@@ -275,6 +294,9 @@ paths:
       responses:
         "200":
           description: "Successful response returning bulk job ID and download archive link."
+          headers:
+            X-Correlation-ID:
+              $ref: "#/components/headers/CorrelationIdResponseHeader"
           content:
             application/json:
               schema:
@@ -298,6 +320,8 @@ paths:
                   value:
                     id: "72c037df-d0d3-43ee-9470-323ff35a2e50"
                     link: "https://api.xyo.financial/v1/ai/finance/enrichment/download/72c037df-d0d3-43ee-9470-323ff35a2e50.tar.gz"
+        "429":
+          $ref: "#/components/responses/TooManyRequestsError"
         "3XX":
           description: Redirection
           content:
@@ -306,12 +330,37 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "4XX":
           description: Client Error
+          headers:
+            X-Correlation-ID:
+              $ref: "#/components/headers/CorrelationIdResponseHeader"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                emptyBatch:
+                  summary: "400 Bad Request (Empty Batch)"
+                  value:
+                    errors:
+                      - type: "https://api.xyo.financial/errors/invalid-batch-size"
+                        title: "Invalid Batch Size"
+                        status: 400
+                        detail: "Batch payload must contain at least 1 transaction (minItems: 1)."
+                        instance: "/v1/ai/finance/enrichment/transactions#req-004"
+                oversizedBatch:
+                  summary: "400 Bad Request (Oversized Batch)"
+                  value:
+                    errors:
+                      - type: "https://api.xyo.financial/errors/invalid-batch-size"
+                        title: "Invalid Batch Size"
+                        status: 400
+                        detail: "Batch payload exceeds maximum limit of 50,000 transactions (maxItems: 50000). Please partition into smaller batches."
+                        instance: "/v1/ai/finance/enrichment/transactions#req-005"
         "5XX":
           description: Server Error
+          headers:
+            X-Correlation-ID:
+              $ref: "#/components/headers/CorrelationIdResponseHeader"
           content:
             application/json:
               schema:
@@ -341,9 +390,14 @@ paths:
           schema:
             type: string
           example: syniol
+        - $ref: "#/components/parameters/CorrelationIdHeader"
+        - $ref: "#/components/parameters/TraceParentHeader"
       responses:
         "200":
           description: "Successful response returning the current processing status of the bulk enrichment job."
+          headers:
+            X-Correlation-ID:
+              $ref: "#/components/headers/CorrelationIdResponseHeader"
           content:
             application/json:
               schema:
@@ -373,6 +427,8 @@ paths:
                   summary: "Job processing failed"
                   value:
                     status: "FAILED"
+        "429":
+          $ref: "#/components/responses/TooManyRequestsError"
         "3XX":
           description: Redirection
           content:
@@ -381,17 +437,96 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "4XX":
           description: Client Error
+          headers:
+            X-Correlation-ID:
+              $ref: "#/components/headers/CorrelationIdResponseHeader"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
         "5XX":
           description: Server Error
+          headers:
+            X-Correlation-ID:
+              $ref: "#/components/headers/CorrelationIdResponseHeader"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 components:
+  parameters:
+    CorrelationIdHeader:
+      name: X-Correlation-ID
+      in: header
+      required: false
+      description: "Unique caller correlation identifier (UUIDv4) for distributed tracing across microservice boundaries."
+      schema:
+        type: string
+        format: uuid
+        example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+    TraceParentHeader:
+      name: traceparent
+      in: header
+      required: false
+      description: "Standard W3C TraceContext header (version-trace_id-parent_id-trace_flags) for distributed APM tracing."
+      schema:
+        type: string
+        example: "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"
+  headers:
+    RetryAfter:
+      description: "Number of seconds the client must wait before retrying the rate-limited request."
+      schema:
+        type: integer
+        example: 30
+    RateLimitLimit:
+      description: "Maximum number of requests permitted in the current rate limit window."
+      schema:
+        type: integer
+        example: 100
+    RateLimitRemaining:
+      description: "Remaining number of requests allowed in the current rate limit window."
+      schema:
+        type: integer
+        example: 0
+    RateLimitReset:
+      description: "Time in seconds remaining until the rate limit window resets."
+      schema:
+        type: integer
+        example: 30
+    CorrelationIdResponseHeader:
+      description: "Unique correlation identifier echoed back in the response for end-to-end distributed tracing."
+      schema:
+        type: string
+        format: uuid
+        example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+  responses:
+    TooManyRequestsError:
+      description: "Too Many Requests - Rate limit or quota exceeded."
+      headers:
+        Retry-After:
+          $ref: "#/components/headers/RetryAfter"
+        RateLimit-Limit:
+          $ref: "#/components/headers/RateLimitLimit"
+        RateLimit-Remaining:
+          $ref: "#/components/headers/RateLimitRemaining"
+        RateLimit-Reset:
+          $ref: "#/components/headers/RateLimitReset"
+        X-Correlation-ID:
+          $ref: "#/components/headers/CorrelationIdResponseHeader"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          examples:
+            rateLimitExceeded:
+              summary: "429 Rate Limit Exceeded"
+              value:
+                errors:
+                  - type: "https://api.xyo.financial/errors/rate-limit-exceeded"
+                    title: "Too Many Requests"
+                    status: 429
+                    detail: "Rate limit quota exceeded. Please retry after 30 seconds."
+                    instance: "urn:trace:9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
   schemas:
     APIError:
       type: object
