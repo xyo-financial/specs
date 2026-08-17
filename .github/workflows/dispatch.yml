@@ -18,14 +18,13 @@ jobs:
     strategy:
       matrix:
         repo:
-          - xyo-financial/sdk-go
-          - xyo-financial/sdk-node
-          - xyo-financial/sdk-java
-          - xyo-financial/sdk-php
           - xyo-financial/sdk-cpp
           - xyo-financial/sdk-rust
+          - xyo-financial/sdk-go
+          - xyo-financial/sdk-java
           - xyo-financial/sdk-dotnet
           - xyo-financial/sdk-python
+          - xyo-financial/sdk-node
       fail-fast: false
 
     steps:
