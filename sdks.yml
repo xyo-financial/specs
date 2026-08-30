@@ -1,0 +1,59 @@
+# Canonical record of the official SDK fleet.
+#
+# This file is the source of truth. README.md, the dispatch matrix in
+# .github/workflows/dispatch.yml, and the SDK repositories themselves are all
+# validated against it by scripts/check_sdk_manifest.py, so a change in one
+# place that is not reflected in the others fails CI instead of drifting
+# quietly. Documentation drift is what this exists to stop.
+#
+# model:
+#   generated  the generated client is the transport the SDK ships
+#   reference  the generated client is committed for review only, never built,
+#              linked or shipped; the transport is hand-written
+
+sdks:
+  - repo: xyo-financial/sdk-cpp
+    language: C++
+    ecosystem: CMake / vcpkg
+    model: reference
+    generated_path: openapi
+    note: >-
+      cpp-restsdk targets Microsoft's cpprestsdk, archived 1 June 2026 and
+      removed from vcpkg the following day, so nothing linking it can be
+      installed. Tracked in xyo-financial/sdk-cpp#29.
+
+  - repo: xyo-financial/sdk-rust
+    language: Rust
+    ecosystem: "`cargo add xyo-sdk`"
+    model: generated
+    generated_path: openapi
+
+  - repo: xyo-financial/sdk-go
+    language: Go
+    ecosystem: "`go get github.com/xyo-financial/sdk-go`"
+    model: generated
+    generated_path: openapi
+
+  - repo: xyo-financial/sdk-java
+    language: Java
+    ecosystem: Maven Central / Gradle
+    model: generated
+    generated_path: openapi
+
+  - repo: xyo-financial/sdk-dotnet
+    language: .NET / C#
+    ecosystem: "`dotnet add package Xyo.Sdk`"
+    model: generated
+    generated_path: src/Xyo.Generated
+
+  - repo: xyo-financial/sdk-python
+    language: Python
+    ecosystem: "`pip install xyo-sdk`"
+    model: generated
+    generated_path: src/xyo/_generated
+
+  - repo: xyo-financial/sdk-node
+    language: Node.js & TypeScript
+    ecosystem: "`npm install xyo-sdk`"
+    model: generated
+    generated_path: src/generated

@@ -1,0 +1,39 @@
+name: Verify SDK Manifest
+
+# Documentation about the SDK fleet drifted from reality repeatedly, and every
+# time a person noticed rather than CI. This makes sdks.yml the source of truth
+# and fails when the README, the dispatch matrix or the repositories disagree
+# with it.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # The SDK repositories change without anything happening here, so drift can
+    # appear with no event in this repository to catch it. Weekly is enough.
+    - cron: '0 7 * * 1'
+  workflow_dispatch:
+
+jobs:
+  verify:
+    name: Manifest, README and Fleet
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - run: pip install pyyaml
+
+      - name: Verify everything agrees with sdks.yml
+        env:
+          # Reading public repositories only; no write access is needed.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 scripts/check_sdk_manifest.py --live

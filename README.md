@@ -39,6 +39,8 @@ The reason is not preference. The `cpp-restsdk` generator emits code against Mic
 
 **Generating from the specification is the convention.** A new SDK should follow it, and an existing one should not diverge without a recorded decision.
 
+The fleet is recorded canonically in [`sdks.yml`](sdks.yml). The table above, the dispatch matrix in [`dispatch.yml`](.github/workflows/dispatch.yml), and the SDK repositories themselves are all validated against it by [`scripts/check_sdk_manifest.py`](scripts/check_sdk_manifest.py), which runs on every change here and weekly against the live repositories. Adding, removing or changing an SDK means editing `sdks.yml`; anything left out of step fails CI rather than drifting quietly.
+
 ---
 
 ## 🏛️ API Governance & Contribution
