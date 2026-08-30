@@ -7,9 +7,8 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Tag or ref to dispatch to SDKs'
+        description: 'Tag or ref to dispatch to SDKs (blank uses the ref this run was started from)'
         required: false
-        default: 'main'
 
 jobs:
   dispatch:
@@ -34,4 +33,8 @@ jobs:
           token: ${{ secrets.SDK_DISPATCH_TOKEN || secrets.DISPATCH_TOKEN || secrets.GITHUB_TOKEN }}
           repository: ${{ matrix.repo }}
           event-type: spec_tagged
-          client-payload: '{"tag": "${{ github.ref_name || inputs.tag }}"}'
+          # inputs.tag must come first: github.ref_name is populated on every
+          # event, including workflow_dispatch, so putting it first short-circuits
+          # the fallback and makes the manual input unreachable. On a tag push the
+          # inputs context is empty, so this still resolves to the pushed tag.
+          client-payload: '{"tag": "${{ inputs.tag || github.ref_name }}"}'
