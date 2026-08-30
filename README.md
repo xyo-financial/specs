@@ -19,17 +19,19 @@ Central source of truth for the **[XYO Financial](https://xyo.financial)** AI Tr
 
 ## 🌐 Official Client SDKs
 
-All official client SDKs are deterministically generated and synchronized with this repository:
+All official client SDKs are synchronized with this repository. Most are generated from `openapi.yml`; C++ and Python are written by hand and verified against it, so the **Sync** column records which applies:
 
-| Language / Runtime       | Repository                                                                | Package / Ecosystem                      |
-| :----------------------- | :------------------------------------------------------------------------ | :--------------------------------------- |
-| **C++**                  | [`xyo-financial/sdk-cpp`](https://github.com/xyo-financial/sdk-cpp)       | CMake / vcpkg                            |
-| **Rust**                 | [`xyo-financial/sdk-rust`](https://github.com/xyo-financial/sdk-rust)     | `cargo add xyo-sdk`                      |
-| **Go**                   | [`xyo-financial/sdk-go`](https://github.com/xyo-financial/sdk-go)         | `go get github.com/xyo-financial/sdk-go` |
-| **Java**                 | [`xyo-financial/sdk-java`](https://github.com/xyo-financial/sdk-java)     | Maven Central / Gradle                   |
-| **.NET / C#**            | [`xyo-financial/sdk-dotnet`](https://github.com/xyo-financial/sdk-dotnet) | `dotnet add package Xyo.Sdk`             |
-| **Python**               | [`xyo-financial/sdk-python`](https://github.com/xyo-financial/sdk-python) | `pip install xyo-sdk`                    |
-| **Node.js & TypeScript** | [`xyo-financial/sdk-node`](https://github.com/xyo-financial/sdk-node)     | `npm install xyo-sdk`                    |
+| Language / Runtime       | Repository                                                                | Package / Ecosystem                      | Sync                   |
+| :----------------------- | :------------------------------------------------------------------------ | :--------------------------------------- | :--------------------- |
+| **C++**                  | [`xyo-financial/sdk-cpp`](https://github.com/xyo-financial/sdk-cpp)       | CMake / vcpkg                            | Hand-written, verified |
+| **Rust**                 | [`xyo-financial/sdk-rust`](https://github.com/xyo-financial/sdk-rust)     | `cargo add xyo-sdk`                      | Generated              |
+| **Go**                   | [`xyo-financial/sdk-go`](https://github.com/xyo-financial/sdk-go)         | `go get github.com/xyo-financial/sdk-go` | Generated              |
+| **Java**                 | [`xyo-financial/sdk-java`](https://github.com/xyo-financial/sdk-java)     | Maven Central / Gradle                   | Generated              |
+| **.NET / C#**            | [`xyo-financial/sdk-dotnet`](https://github.com/xyo-financial/sdk-dotnet) | `dotnet add package Xyo.Sdk`             | Generated              |
+| **Python**               | [`xyo-financial/sdk-python`](https://github.com/xyo-financial/sdk-python) | `pip install xyo-sdk`                    | Hand-written, verified |
+| **Node.js & TypeScript** | [`xyo-financial/sdk-node`](https://github.com/xyo-financial/sdk-node)     | `npm install xyo-sdk`                    | Generated              |
+
+A **generated** SDK regenerates its client from `openapi.yml` and opens a pull request with the result. A **hand-written** SDK cannot apply a spec change automatically, so it verifies that its client still covers every path the specification declares and raises an issue when a change needs implementing by hand.
 
 ---
 
@@ -39,7 +41,19 @@ This repository enforces strict OpenAPI schema validation and style governance:
 
 1. **Prettier Formatting:** Ensures consistent YAML/JSON indentation and formatting.
 2. **Spectral Linting:** Validates OpenAPI 3.0 semantic accuracy and structural rules via `.spectral.yaml`.
-3. **Automated SDK Dispatch:** Pushing a new version tag (e.g. `v2.0.0`) automatically dispatches a `spec_tagged` webhook to all 7 client SDK repositories to trigger automated regeneration and test validation.
+3. **Automated SDK Dispatch:** Pushing a new version tag (e.g. `v2.0.0`) dispatches a `spec_tagged` event to all 7 client SDK repositories, each of which then regenerates or verifies its client according to its own toolchain.
+
+#### Dispatch Contract
+
+`spec_tagged` is the only event this repository emits, and it carries a single field:
+
+```json
+{ "tag": "v2.0.0" }
+```
+
+Consumers should treat `tag` as a git ref in this repository and check the specification out at that ref. On a tag push it is the pushed tag. On a manual run of the dispatch workflow it is whatever ref the operator supplied, defaulting to the ref the run was started from.
+
+A new SDK should subscribe to `spec_tagged` only. An earlier `spec_updated` event was subscribed to by several SDKs but never emitted; it has been retired rather than implemented, because the generating SDKs do not filter on whether `openapi.yml` actually changed, so emitting on every push to `main` would raise regeneration pull requests across the fleet for unrelated commits.
 
 ### Local Verification
 
