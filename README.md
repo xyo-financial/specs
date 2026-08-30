@@ -19,21 +19,25 @@ Central source of truth for the **[XYO Financial](https://xyo.financial)** AI Tr
 
 ## 🌐 Official Client SDKs
 
-All official client SDKs are synchronized with this repository. Six generate their client from `openapi.yml` and wrap it by hand. C++ is the single exception, and that exception is under review:
+All official client SDKs are synchronized with this repository, and every one of them regenerates from `openapi.yml` on each `spec_tagged` dispatch. What differs is what happens to that output:
 
-| Language / Runtime       | Repository                                                                | Package / Ecosystem                      | Sync                            |
-| :----------------------- | :------------------------------------------------------------------------ | :--------------------------------------- | :------------------------------ |
-| **C++**                  | [`xyo-financial/sdk-cpp`](https://github.com/xyo-financial/sdk-cpp)       | CMake / vcpkg                            | Hand-written, verified (review) |
-| **Rust**                 | [`xyo-financial/sdk-rust`](https://github.com/xyo-financial/sdk-rust)     | `cargo add xyo-sdk`                      | Generated                       |
-| **Go**                   | [`xyo-financial/sdk-go`](https://github.com/xyo-financial/sdk-go)         | `go get github.com/xyo-financial/sdk-go` | Generated                       |
-| **Java**                 | [`xyo-financial/sdk-java`](https://github.com/xyo-financial/sdk-java)     | Maven Central / Gradle                   | Generated                       |
-| **.NET / C#**            | [`xyo-financial/sdk-dotnet`](https://github.com/xyo-financial/sdk-dotnet) | `dotnet add package Xyo.Sdk`             | Generated                       |
-| **Python**               | [`xyo-financial/sdk-python`](https://github.com/xyo-financial/sdk-python) | `pip install xyo-sdk`                    | Generated                       |
-| **Node.js & TypeScript** | [`xyo-financial/sdk-node`](https://github.com/xyo-financial/sdk-node)     | `npm install xyo-sdk`                    | Generated                       |
+| Language / Runtime       | Repository                                                                | Package / Ecosystem                      | Sync                   |
+| :----------------------- | :------------------------------------------------------------------------ | :--------------------------------------- | :--------------------- |
+| **C++**                  | [`xyo-financial/sdk-cpp`](https://github.com/xyo-financial/sdk-cpp)       | CMake / vcpkg                            | Generated as reference |
+| **Rust**                 | [`xyo-financial/sdk-rust`](https://github.com/xyo-financial/sdk-rust)     | `cargo add xyo-sdk`                      | Generated              |
+| **Go**                   | [`xyo-financial/sdk-go`](https://github.com/xyo-financial/sdk-go)         | `go get github.com/xyo-financial/sdk-go` | Generated              |
+| **Java**                 | [`xyo-financial/sdk-java`](https://github.com/xyo-financial/sdk-java)     | Maven Central / Gradle                   | Generated              |
+| **.NET / C#**            | [`xyo-financial/sdk-dotnet`](https://github.com/xyo-financial/sdk-dotnet) | `dotnet add package Xyo.Sdk`             | Generated              |
+| **Python**               | [`xyo-financial/sdk-python`](https://github.com/xyo-financial/sdk-python) | `pip install xyo-sdk`                    | Generated              |
+| **Node.js & TypeScript** | [`xyo-financial/sdk-node`](https://github.com/xyo-financial/sdk-node)     | `npm install xyo-sdk`                    | Generated              |
 
-A **generated** SDK regenerates its client from `openapi.yml` on every `spec_tagged` dispatch and opens a pull request with the result. The generated layer is committed exactly as the generator emits it, never hand-edited or reformatted, and a hand-crafted wrapper in front of it supplies the ergonomics the generator does not: idiomatic types, error mapping, streaming and egress controls.
+In a **generated** SDK the output is the transport the SDK ships. It is committed exactly as the generator emits it, never hand-edited or reformatted, with a hand-crafted wrapper in front supplying the ergonomics the generator does not: idiomatic types, error mapping, streaming and egress controls.
 
-**Generation is the convention.** A new SDK should follow it, and an existing one should not diverge from it without a recorded decision. C++ is currently the only exception, because its generated client pulled in `cpprestsdk` and `Boost` across eight vcpkg triplets including Android cross-compiles; whether it converges is being decided in [`sdk-cpp#29`](https://github.com/xyo-financial/sdk-cpp/issues/29). Meanwhile it consumes the same dispatch and verifies that its client still covers every path the specification declares, raising an issue when a change needs implementing by hand.
+In C++ the output is a **reference** only. It is generated and committed the same way, but it is never built, linked or shipped; the transport that ships is hand-written on `cpr`. The reference exists so that a specification change arrives as a concrete diff in C++ terms, which a maintainer reads and applies by hand.
+
+The reason is not preference. The `cpp-restsdk` generator emits code against Microsoft's cpprestsdk, which was archived on 1 June 2026 and removed from vcpkg the following day ([`microsoft/vcpkg#52130`](https://github.com/microsoft/vcpkg/pull/52130)). Anything linking it is uninstallable on every triplet, so C++ cannot ship generated output until it targets a maintained library. That question is open in [`sdk-cpp#29`](https://github.com/xyo-financial/sdk-cpp/issues/29).
+
+**Generating from the specification is the convention.** A new SDK should follow it, and an existing one should not diverge without a recorded decision.
 
 ---
 
